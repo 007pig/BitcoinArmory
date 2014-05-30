@@ -26,9 +26,9 @@ class WalletTools(PyBtcWallet):
         newWallet.lastComputedChainAddr160 = self.lastComputedChainAddr160
         newWallet.lastComputedChainIndex = self.lastComputedChainIndex
 
-        a1 = dict(self.addrMap.items()[0:5000])
-        a2 = dict(self.addrMap.items()[5000:10000])
-        a3 = dict(self.addrMap.items()[10000:15000])
+        a1 = dict(self.addrMap.items()[0:2000])
+        a2 = dict(self.addrMap.items()[2000:4000])
+        a3 = dict(self.addrMap.items()[4000:6000])
 
         newWallet.addrMap = a2
         newWallet.addrMap['ROOT'] = self.addrMap['ROOT']
