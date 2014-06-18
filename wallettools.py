@@ -15,28 +15,35 @@ class WalletTools(PyBtcWallet):
         shortLabel = self.labelName
         longLabel = self.labelDescr
 
-        newWallet.labelName = (shortLabel + ' (Part 2)')[:32]
-        newWallet.labelDescr = (longLabel + ' (Part 2)')[:256]
+        startindex = 0
 
-        newWallet.commentsMap = self.commentsMap
-        newWallet.opevalMap = self.opevalMap
+        while True:
+            addresses = dict(self.addrMap.items()[startindex:startindex+2000])
+            pprint.pprint(addresses)
+            break
+            if not addresses:
+                break
 
-        # newWallet.uniqueIDBin = self.uniqueIDBin
-        newWallet.highestUsedChainIndex = self.highestUsedChainIndex
-        newWallet.lastComputedChainAddr160 = self.lastComputedChainAddr160
-        newWallet.lastComputedChainIndex = self.lastComputedChainIndex
+            startindex += 2000
 
-        a1 = dict(self.addrMap.items()[0:2000])
-        a2 = dict(self.addrMap.items()[2000:4000])
-        a3 = dict(self.addrMap.items()[4000:6000])
+            newWallet.labelName = (shortLabel + ' (' + str(startindex) + ')')[:32]
+            newWallet.labelDescr = (longLabel + ' (' + str(startindex) + ')')[:256]
 
-        newWallet.addrMap = a2
-        newWallet.addrMap['ROOT'] = self.addrMap['ROOT']
+            newWallet.commentsMap = self.commentsMap
+            newWallet.opevalMap = self.opevalMap
 
-        firstAddr = a2[a2.keys()[0]]
+            # newWallet.uniqueIDBin = self.uniqueIDBin
+            newWallet.highestUsedChainIndex = self.highestUsedChainIndex
+            newWallet.lastComputedChainAddr160 = self.lastComputedChainAddr160
+            newWallet.lastComputedChainIndex = self.lastComputedChainIndex
 
-        self.uniqueIDBin = (ADDRBYTE + firstAddr.getAddr160()[:5])[::-1]
-        self.uniqueIDB58 = binary_to_base58(self.uniqueIDBin)
+            newWallet.addrMap = addresses
+            newWallet.addrMap['ROOT'] = self.addrMap['ROOT']
+
+            firstAddr = addresses[addresses.keys()[0]]
+
+            newWallet.uniqueIDBin = (ADDRBYTE + firstAddr.getAddr160()[:5])[::-1]
+            newWallet.uniqueIDB58 = binary_to_base58(newWallet.uniqueIDBin)
 
 
         # pprint.pprint(a1)
@@ -56,15 +63,17 @@ class WalletTools(PyBtcWallet):
             # newWallet.addrMap[addr160].useEncryption = False
             # newWallet.addrMap[addr160].createPrivKeyNextUnlock = False
 
-        newWallet.writeFreshWalletFile(newWalletFile, shortLabel, longLabel)
+            newWallet.writeFreshWalletFile(newWalletFile + str(startindex) + '.wallet', shortLabel, longLabel)
+
         return newWallet
 
 
 
 
 wltLoad = WalletTools().readWalletFile('/Users/xiaoyu/Desktop/p1_armory_JQ3HSakw_.watchonly.wallet')
+# wltLoad = WalletTools().readWalletFile('/Users/xiaoyu/Library/Application Support/Armory/p1_armory_JQ3HSakw_.watchonly.part100000.wallet')
 wltID = wltLoad.uniqueIDB58
 
-wltLoad.forkWatchonlyWallet('/Users/xiaoyu/Library/Application Support/Armory/p1_armory_JQ3HSakw_.watchonly.part2.wallet')
+wltLoad.forkWatchonlyWallet('/Users/xiaoyu/Library/Application Support/Armory/p1_armory_JQ3HSakw_.watchonly.part')
 
 pprint.pprint(wltID)
